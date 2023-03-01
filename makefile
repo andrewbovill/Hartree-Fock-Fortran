@@ -24,4 +24,5 @@ hf.o : hf_mod.f03 hf_mod.o
 #
 
 clean: 
-	rm -f *.o
+	rm -rf *.o *.mod
+
