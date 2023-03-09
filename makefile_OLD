@@ -16,7 +16,7 @@ all: hf.exe
 hf_mod.o : hf_mod.f03
 	$(RunF) $(LIBS) -c hf_mod.f03
 
-hf.o : hf.f03 hf_mod.o
+hf.o : hf_mod.f03 hf_mod.o
 	$(RunF) $(LIBS) -c hf.f03 
 
 #

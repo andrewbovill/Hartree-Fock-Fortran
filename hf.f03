@@ -7,14 +7,15 @@
 !     Basis set (For now STO-3G and 6-31G)
 !     (blank line)
 !     x y z Atom 
-!     (blank line)
 !       
 !     Example:
-!
+
+!     (Beginning of file)
 !     STO-3G 
 !
 !     0.0 0.0 0.0 H
 !     0.0 0.0 0.0 H
+!     (End of file)
 !
 !
 !     -Andrew Bovill 2023
@@ -28,9 +29,9 @@
 !
       implicit none
      
-      integer :: nCommands
-      character(len=512) :: filename, basis
-      integer,parameter :: Iunit=10
+      integer :: nCommands, nAtoms
+      character(len=512) :: filename, basis, atom, atom_coordinates
+      integer,parameter :: IUnit = 10
 
 !
 !     Format Statements
@@ -38,11 +39,10 @@
 
 1000  Format(1x,'Calculating SCF energy with Hartree Fock')
 1010  Format(1x,'Name of File: ',A)
-1020  Format(1x,'Basis set: ',A)
-1030  Format(1x,'Atomic Coordinates : ',A)
+1020  Format(1x,'NAtoms: ',I3)
+1030  Format(1x,'Basis set: ',A)
+1040  Format(1x,'Atomic Coordinates : ',A)
 
-
-8999  Format(1x,'ERROR Program did not succesfully terminate!')
 9999  Format(1x,'HF program completed')
 
 !
@@ -52,18 +52,23 @@
       nCommands = command_argument_count()
       if(nCommands.ne.1) THEN 
         write(IOut,*) "Only 1 command line arguement is accepted."
-        write(IOut,8999)
-        go to 999
+        call fail()
       end if
       write(*,1000)
       call get_command_argument(1,filename)
       open (File=trim(filename), Unit = Iunit)
       write(*,1010) trim(filename)
 
-      call read_basis (filename, basis)
-      call read_coordinates (filename)
+      call get_atom (IUnit,nAtoms)
+      call get_basis (IUnit,basis)
 
-  999 Continue 
+!
+!     Allocate Matrices
+!
+      write(*,1020) nAtoms
+      write(*,1030) basis
+
+!     call get_atom_coords (IUnit,basis,atom,atom_coordinates)
+
       write(IOut,9999)
       end program hf
-
